@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <Folder Include="BusinessLogic\" />
-    <Folder Include="WebApi\" />
+    <Folder Include="WebApi\Pizzas\Controllers\" />
   </ItemGroup>
 
 </Project>

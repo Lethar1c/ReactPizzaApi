@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReactPizza.DataAccess.Models;
 
-namespace ReactPizza.DataAccess
+namespace ReactPizza.DataAccess.Repositories
 {
     public class PizzaRepository : IPizzaRepository
     {

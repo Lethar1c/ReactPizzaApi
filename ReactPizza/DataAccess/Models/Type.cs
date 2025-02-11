@@ -1,4 +1,4 @@
-﻿namespace ReactPizza.DataAccess
+﻿namespace ReactPizza.DataAccess.Models
 {
     public class Type
     {

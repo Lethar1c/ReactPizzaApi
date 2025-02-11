@@ -1,4 +1,6 @@
-﻿namespace ReactPizza.DataAccess
+﻿using ReactPizza.DataAccess.Models;
+
+namespace ReactPizza.DataAccess.Repositories
 {
     public interface IPizzaRepository
     {

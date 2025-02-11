@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ReactPizza.DataAccess.Models;
 
 namespace ReactPizza.DataAccess
 {
@@ -8,7 +9,7 @@ namespace ReactPizza.DataAccess
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Size> Sizes { get; set; }
-        public DbSet<Type> Types { get; set; }
+        public DbSet<Models.Type> Types { get; set; }
         public DbSet<Category> Categories { get; set; }
         public ApplicationContext() { }
         public ApplicationContext(DbContextOptions<ApplicationContext> contextOptions) :
