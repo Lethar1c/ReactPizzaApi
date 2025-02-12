@@ -14,16 +14,16 @@ namespace ReactPizza.DataAccess.Repositories
         {
             await _context.Pizzas.AddAsync(pizza);
             await _context.SaveChangesAsync();
-            return _context.Pizzas.Last();
+            return _context.Pizzas.Include(p => p.Types).Include(p => p.Sizes).OrderBy(p => p.Id).Last();
         }
         public async Task<Pizza?> GetPizza(int id)
         {
-            Pizza? pizza = await _context.Pizzas.FirstOrDefaultAsync(pizza => pizza.Id == id);
+            Pizza? pizza = await _context.Pizzas.Include(p => p.Types).Include(p => p.Sizes).FirstOrDefaultAsync(pizza => pizza.Id == id);
             return pizza;
         }
         public async Task<List<Pizza>> GetAllPizzas()
         {
-            return await _context.Pizzas.ToListAsync();
+            return await _context.Pizzas.Include(p => p.Types).Include(p => p.Sizes).ToListAsync();
         }
         public async Task<Pizza?> UpdatePizza(int id, Pizza newPizza)
         {

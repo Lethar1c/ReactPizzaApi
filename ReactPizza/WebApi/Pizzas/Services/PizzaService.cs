@@ -13,20 +13,20 @@ namespace ReactPizza.WebApi.Pizzas.Services
             _repository = repository;
         }
 
-        private PizzaDto? PizzaToDto(Pizza? pizza)
+        private static PizzaDto? PizzaToDto(Pizza? pizza)
         {
             if (pizza == null) return null;
-            List<Tuple<int, decimal>> sizes = [];
-            List<Tuple<int, string>> types = [];
+            List<SizeDto> sizes = [];
+            List<TypeDto> types = [];
 
             foreach (Size size in pizza.Sizes)
             {
-                sizes.Add(new Tuple<int, decimal>(size.Cantimeters, size.Price));
+                sizes.Add(new SizeDto(size.Cantimeters, size.Price));
             }
 
             foreach (Type type in pizza.Types)
             {
-                types.Add(new Tuple<int, string>(type.Id, type.Name));
+                types.Add(new TypeDto(type.Id, type.Name));
             }
 
             return new PizzaDto
@@ -39,11 +39,35 @@ namespace ReactPizza.WebApi.Pizzas.Services
                 Types = types
             };
         }
-
-        public async Task<PizzaDto> AddPizza(Pizza pizza)
+        private static Pizza? DtoToPizza(PizzaDto? pizzaDto)
         {
-            Pizza addedPizza = await _repository.AddPizza(pizza);
-            return PizzaToDto(addedPizza);
+            if (pizzaDto == null) return null;
+            List<Size> sizes = [];
+            List<Type> types = [];
+            foreach (var type in pizzaDto.Types)
+            {
+                types.Add(new Type(type.Id, type.Name));
+            }
+            foreach (var size in pizzaDto.Sizes)
+            {
+                sizes.Add(new Size(size.Diameter, size.Price));
+            }
+            Pizza newPizza = new()
+            {
+                Name = pizzaDto.Name,
+                Description = pizzaDto.Description,
+                Rating = pizzaDto.Rating,
+                Sizes = sizes,
+                Types = types
+            };
+            return newPizza;
+        }
+
+        public async Task<PizzaDto?> AddPizza(PizzaDto pizzaDto)
+        {
+            Pizza? newPizza = DtoToPizza(pizzaDto);
+            if (newPizza == null) return null;
+            return PizzaToDto(await _repository.AddPizza(newPizza));
         }
 
         public async Task DeletePizza(int id)
@@ -51,9 +75,9 @@ namespace ReactPizza.WebApi.Pizzas.Services
             await _repository.DeletePizza(id);
         }
 
-        public async Task<List<PizzaDto>> GetAllPizzas()
+        public async Task<List<PizzaDto?>> GetAllPizzas()
         {
-            List<PizzaDto> pizzas = (await _repository.GetAllPizzas()).Select(p => PizzaToDto(p)).ToList();
+            List<PizzaDto?> pizzas = (await _repository.GetAllPizzas()).Select(p => PizzaToDto(p)).ToList();
             return pizzas;
         }
 
@@ -63,8 +87,10 @@ namespace ReactPizza.WebApi.Pizzas.Services
             return pizza;
         }
 
-        public async Task<PizzaDto?> UpdatePizza(int id, Pizza newPizza)
+        public async Task<PizzaDto?> UpdatePizza(int id, PizzaDto newPizzaDto)
         {
+            Pizza? newPizza = DtoToPizza(newPizzaDto);
+            if (newPizza == null) return null;
             PizzaDto? pizza = PizzaToDto(await _repository.UpdatePizza(id, newPizza));
             return pizza;
         }
