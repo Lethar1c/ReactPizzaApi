@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="BusinessLogic\" />
+    <Folder Include="WebApi\Authenfication\Controllers\" />
   </ItemGroup>
 
 </Project>
