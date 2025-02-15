@@ -1,6 +1,6 @@
-﻿using ReactPizza.WebApi.Authenfication.Dtos;
+﻿using ReactPizza.WebApi.Authentication.Dtos;
 
-namespace ReactPizza.WebApi.Authenfication.Services
+namespace ReactPizza.WebApi.Authentication.Services
 {
     public interface IUserService
     {
@@ -9,5 +9,6 @@ namespace ReactPizza.WebApi.Authenfication.Services
         public Task<List<UserDto>> GetAll();
         public Task<UserDto?> UpdateUser(int id, UserDto userDto);
         public Task DeleteUser(int id);
+        public Task<bool> MatchPassword(int id, string password);
     }
 }

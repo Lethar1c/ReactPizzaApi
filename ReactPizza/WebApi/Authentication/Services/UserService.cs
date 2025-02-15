@@ -1,15 +1,17 @@
 ﻿using ReactPizza.DataAccess.Models;
 using ReactPizza.DataAccess.Repositories;
-using ReactPizza.WebApi.Authenfication.Dtos;
+using ReactPizza.WebApi.Authentication.Dtos;
 
-namespace ReactPizza.WebApi.Authenfication.Services
+namespace ReactPizza.WebApi.Authentication.Services
 {
     public class UserService : IUserService
     {
         private IUserRepository _userRepository;
-        public UserService(IUserRepository repository)
+        private IPasswordService _passwordService;
+        public UserService(IUserRepository repository, IPasswordService passwordService)
         {
             _userRepository = repository;
+            _passwordService = passwordService;
         }
 
         private UserDto? UserToDto(User? user)
@@ -20,7 +22,6 @@ namespace ReactPizza.WebApi.Authenfication.Services
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                HashedPassword = user.HashedPassword,
                 Role = new RoleDto(user.Role.Id, user.Role.Name)
             };
         }
@@ -33,7 +34,7 @@ namespace ReactPizza.WebApi.Authenfication.Services
                 Id = user.Id,
                 Email = user.Email,
                 Name = user.Name,
-                HashedPassword = user.HashedPassword,
+                HashedPassword = _passwordService.HashPassword(user.Id.ToString(), user.Password),
                 Role = new Role(user.Role.Name)
             };
         }
@@ -76,6 +77,13 @@ namespace ReactPizza.WebApi.Authenfication.Services
             if (newUser == null) return null;
             User? newUserDto = await _userRepository.Update(id, newUser);
             return UserToDto(newUserDto);
+        }
+
+        public async Task<bool> MatchPassword(int id, string password)
+        {
+            User? user = await _userRepository.Get(id);
+            if (user == null) return false;
+            return _passwordService.Match(id.ToString(), password, user.HashedPassword);
         }
     }
 }

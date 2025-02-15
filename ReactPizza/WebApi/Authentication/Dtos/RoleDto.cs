@@ -1,4 +1,4 @@
-﻿namespace ReactPizza.WebApi.Authenfication.Dtos
+﻿namespace ReactPizza.WebApi.Authentication.Dtos
 {
     public class RoleDto
     {
