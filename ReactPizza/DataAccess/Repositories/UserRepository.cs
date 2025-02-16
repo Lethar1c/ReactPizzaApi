@@ -29,7 +29,7 @@ namespace ReactPizza.DataAccess.Repositories
 
         public async Task<User?> Get(int id)
         {
-            User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
@@ -48,6 +48,16 @@ namespace ReactPizza.DataAccess.Repositories
             user.HashedPassword = newUser.HashedPassword;
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        public async Task<User?> FirstOrDefault(FilterFunction filter)
+        {
+            List<User> users = await _context.Users.Include(u => u.Role).ToListAsync();
+            foreach (var user in users)
+            {
+                if (filter(user)) return user;
+            }
+            return null;
         }
     }
 }

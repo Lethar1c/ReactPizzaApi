@@ -79,11 +79,31 @@ namespace ReactPizza.WebApi.Authentication.Services
             return UserToDto(newUserDto);
         }
 
-        public async Task<bool> MatchPassword(int id, string password)
+        public async Task<User?> MatchPassword(int id, string password)
         {
             User? user = await _userRepository.Get(id);
-            if (user == null) return false;
-            return _passwordService.Match(id.ToString(), password, user.HashedPassword);
+            if (user == null) return null;
+            if (_passwordService.Match(id.ToString(), password, user.HashedPassword))
+            {
+                return user;
+            }
+            return null;
+        }
+
+        public async Task<User?> MatchPassword(string email, string password)
+        {
+            User? user = await _userRepository.FirstOrDefault((User user) => user.Email == email);
+            if (user == null) return null;
+            if (_passwordService.Match(user.Id.ToString(), password, user.HashedPassword))
+            {
+                return user;
+            }
+            return null;
+        }
+
+        public async Task<User?> FirstOrDefault(FilterFunction filter)
+        {
+            return await _userRepository.FirstOrDefault(filter);
         }
     }
 }
